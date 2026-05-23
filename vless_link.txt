@@ -1,1 +1,1 @@
-vless://550e8400-e29b-41d4-a716-446655440000@scale-vegas-immunology-finder.trycloudflare.com:443?type=ws&security=tls&path=/&sni=scale-vegas-immunology-finder.trycloudflare.com#ActionRelay-Lab
+vless://550e8400-e29b-41d4-a716-446655440000@womens-miami-responsible-concept.trycloudflare.com:443?type=ws&security=tls&path=/&sni=womens-miami-responsible-concept.trycloudflare.com#ActionRelay-Lab
