@@ -36,6 +36,32 @@ jobs:
           git add vless_link.txt
           git commit -m "Update active VLESS link"
           git push
+
+
+
+
+
+          # ۱. چک کن پورت بازه؟
+          netstat -tuln | grep 8080 || echo "پورت ۸۰۸۰ باز نیست!"
+          
+          # ۲. اجرای Xray در پس‌زمینه و لاگ گرفتن ازش
+          ./xray -c config.json > xray_log.txt 2>&1 &
+          sleep 5
+          
+          # ۳. چک کن Xray زنده‌ست؟
+          ps aux | grep xray
+          
+          # ۴. اجرای تونل با verbose برای دیدنِ خطای واقعی
+          ./cloudflared tunnel --url http://localhost:8080 --loglevel debug > tunnel_log.txt 2>&1 &
+          
+          sleep 20
+          # ۵. ببینیم تونلِ کلاودفلر چی میگه؟
+          cat tunnel_log.txt | grep "https://"
+
+
+
+
+          
           
           echo "--- سرور فعال شد! تا ۶ ساعت آینده می‌تونی از لینکِ توی vless_link.txt استفاده کنی ---"
           sleep 21600
