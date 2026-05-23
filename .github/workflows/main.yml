@@ -14,7 +14,7 @@ jobs:
           
           # دانلود و اجرای Xray
           wget -q https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
-          unzip -q Xray-linux-64.zip
+          unzip -o -q Xray-linux-64.zip
           cat <<EOF > config.json
           {"inbounds":[{"port":8080,"protocol":"vless","settings":{"clients":[{"id":"$UUID"}],"decryption":"none"},"streamSettings":{"network":"ws"}}]}
           EOF
