@@ -1,67 +1,13 @@
-name: Xray VLESS Lab
-on: [workflow_dispatch] # فقط دستی اجرا کن که کنترل داشته باشی
-
+name: VLESS Action
+on: [workflow_dispatch]
 jobs:
-  run-lab:
+  run-xray:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v3
-      - name: Run Proxy Server
+      - name: Install and Run Xray
         run: |
-          UUID="550e8400-e29b-41d4-a716-446655440000"
-          
-          # دانلود و اجرای Xray
-          wget -q https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
-          unzip -o -q Xray-linux-64.zip
-          cat <<EOF > config.json
-          {"inbounds":[{"port":8080,"protocol":"vless","settings":{"clients":[{"id":"$UUID"}],"decryption":"none"},"streamSettings":{"network":"ws"}}]}
-          EOF
+          wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+          unzip -o Xray-linux-64.zip
           ./xray -c config.json &
-          
-          # اجرای تونل
-          wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
-          chmod +x cloudflared
-          ./cloudflared tunnel --url http://localhost:8080 > tunnel_log.txt 2>&1 &
-          
-          sleep 10
-          URL=$(grep -o 'https://.*trycloudflare.com' tunnel_log.txt | head -n 1)
-          LINK="vless://$UUID@${URL#https://}:443?type=ws&security=tls&path=/&sni=${URL#https://}#ActionRelay-Lab"
-          echo $LINK > vless_link.txt
-          
-          # آپدیت فایل در ریپو
-          git config --global user.name "ActionBot"
-          git config --global user.email "bot@action.com"
-          git add vless_link.txt
-          git commit -m "Update active VLESS link"
-          git push
-
-
-
-
-
-          # ۱. چک کن پورت بازه؟
-          netstat -tuln | grep 8080 || echo "پورت ۸۰۸۰ باز نیست!"
-          
-          # ۲. اجرای Xray در پس‌زمینه و لاگ گرفتن ازش
-          ./xray -c config.json > xray_log.txt 2>&1 &
-          sleep 5
-          
-          # ۳. چک کن Xray زنده‌ست؟
-          ps aux | grep xray
-          
-          # ۴. اجرای تونل با verbose برای دیدنِ خطای واقعی
-          ./cloudflared tunnel --url http://localhost:8080 --loglevel debug > tunnel_log.txt 2>&1 &
-          
-          sleep 20
-          # ۵. ببینیم تونلِ کلاودفلر چی میگه؟
-          cat tunnel_log.txt | grep "https://"
-
-
-
-
-          
-          
-          echo "--- سرور فعال شد! تا ۶ ساعت آینده می‌تونی از لینکِ توی vless_link.txt استفاده کنی ---"
           sleep 21600
